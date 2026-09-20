@@ -15,7 +15,9 @@ what you're after, so orgs with thousands of projects aren't fetched in full jus
 throw most of them away. Built-in `--project-type` groups: `iac`, `container`, `code`,
 `secrets`, `opensource` (see `project_type_groups.py`), or pass `--types` with a
 comma-separated list of the API's own `attributes.type` values instead, e.g.
-`--types terraformconfig,k8sconfig`.
+`--types terraformconfig,k8sconfig`. Writes to `project_data.json` by default, or
+`project_data_<project-type>.json` when `--project-type` is given (so fetching two
+different types in a row doesn't overwrite each other) -- override with `--out`.
 
 `change_proj_status.py` - De / activates selected projects. Uses [Snyk's V1 API](https://snyk.docs.apiary.io/).
 
@@ -81,11 +83,12 @@ export SNYK_TOKEN=your_api_token
 
 # 1. Gather only the relevant projects -- filtered server-side, so orgs with
 #    thousands of projects aren't fetched in full. Prints a per-org count so
-#    you can sanity-check before deactivating anything.
+#    you can sanity-check before deactivating anything. Writes to
+#    project_data_iac.json here specifically.
 python3 get_projects.py --group YOUR_GROUP_ID --project-type iac
 
 # 2. Deactivate exactly those projects
-python3 change_proj_status.py project_data.json --action deactivate
+python3 change_proj_status.py project_data_iac.json --action deactivate
 ```
 
-To undo, re-run step 2 with `--action activate` on the same `project_data.json`.
+To undo, re-run step 2 with `--action activate` on the same output file.

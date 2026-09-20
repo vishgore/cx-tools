@@ -27,6 +27,11 @@ parser.add_argument("--types",
                          "--project-type, e.g. terraformconfig,k8sconfig")
 parser.add_argument("--token", default=os.environ.get("SNYK_TOKEN"),
                     help="API token (defaults to SNYK_TOKEN env var)")
+parser.add_argument("--out",
+                    help="Output file (default: project_data.json, or "
+                         "project_data_<project-type>.json when "
+                         "--project-type is given -- so fetching two "
+                         "different types doesn't overwrite each other)")
 args = parser.parse_args()
 if not args.token:
     parser.error("--token is required, or set the SNYK_TOKEN env var")
@@ -35,6 +40,15 @@ if args.project_type and args.types:
 
 types = PROJECT_TYPE_GROUPS[args.project_type] if args.project_type else \
     ([t.strip() for t in args.types.split(",") if t.strip()] if args.types else None)
+
+if args.out:
+    out_path = args.out
+elif args.project_type:
+    out_path = f"project_data_{args.project_type}.json"
+elif args.types:
+    out_path = "project_data_custom.json"
+else:
+    out_path = "project_data.json"
 
 def get_organizations(group_id, api_key):
     try:
@@ -150,6 +164,6 @@ if __name__ == "__main__":
     print(f"\n{len(project_data)} project(s) total across {len(organizations)} org(s)")
 
     # Write the project data to a file
-    write_to_file(project_data, "project_data.json")
+    write_to_file(project_data, out_path)
 
-    print("Project data written to project_data.json")
+    print(f"Project data written to {out_path}")

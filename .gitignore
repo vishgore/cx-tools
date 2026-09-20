@@ -4,7 +4,7 @@ __pycache__
 venv/
 
 # bulk-activate-deactivate-projects run output (real org/project data)
-bulk-activate-deactivate-projects/project_data.json
+bulk-activate-deactivate-projects/project_data*.json
 
 # Build results
 bin/
