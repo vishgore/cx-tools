@@ -80,7 +80,7 @@ def get_organizations(group_id, api_key):
 def get_projects(org_id, api_key, types=None):
     url = f"{API_BASE_URL}/rest/orgs/{org_id}/projects?version={API_VERSION}&limit=100"
     if types:
-        url += "&types=" + ",".join(types)
+        url += "&types=" + quote(",".join(types), safe="")
     headers = {"accept": "application/vnd.api+json", "authorization": f"token {api_key}"}
     projects = []
 
