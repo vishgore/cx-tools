@@ -143,8 +143,11 @@ if __name__ == "__main__":
     for org in organizations:
         org_name = org["attributes"]["name"]
         projects = get_projects(org["id"], api_key, types)
+        print(f"  {org_name}: {len(projects)} project(s)")
         org_project_data = extract_project_data(projects, org_name)
         project_data.extend(org_project_data)
+
+    print(f"\n{len(project_data)} project(s) total across {len(organizations)} org(s)")
 
     # Write the project data to a file
     write_to_file(project_data, "project_data.json")
