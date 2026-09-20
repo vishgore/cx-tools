@@ -30,12 +30,19 @@ RATE_LIMIT_DELAY = 0.2 (in seconds)
 
 ## Usage
 
+Both scripts take `--token`, or default to the `SNYK_TOKEN` env var if `--token` is
+omitted:
+
+```sh
+export SNYK_TOKEN=your_api_token
+```
+
 ### Gather project information 
 
 Run the script locally
 
 ```sh
-python3 get_projects.py --group YOUR_GROUP_ID --token your_api_token
+python3 get_projects.py --group YOUR_GROUP_ID
 ```
 
 Script will output `project_data.json` file. Edit the file as necessary. Example below
@@ -57,7 +64,7 @@ Script will output `project_data.json` file. Edit the file as necessary. Example
 ### Activate / Deactivate Projects
 
 ```sh
-python3 change_proj_status.py project_data.json --action activate/deactivate --token your_api_token
+python3 change_proj_status.py project_data.json --action activate/deactivate
 ```
 
 ## Capability offboarding
@@ -66,15 +73,17 @@ To deactivate every project of one Snyk product (e.g. a customer drops IaC in th
 renewal) across a Group, run the three scripts as a pipeline:
 
 ```sh
+export SNYK_TOKEN=your_api_token
+
 # 1. Gather every org + project in the Group
-python3 get_projects.py --group YOUR_GROUP_ID --token your_api_token
+python3 get_projects.py --group YOUR_GROUP_ID
 
 # 2. Narrow to the capability being dropped (prints a per-org count so you can
 #    sanity-check before deactivating anything)
 python3 filter_by_capability.py project_data.json --capability iac
 
 # 3. Deactivate exactly those projects
-python3 change_proj_status.py projects_to_offboard.json --action deactivate --token your_api_token
+python3 change_proj_status.py projects_to_offboard.json --action deactivate
 ```
 
 `--capability` supports `iac`, `container`, `code`, `opensource`. For anything else,

@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 import argparse
@@ -25,8 +26,11 @@ if __name__ == "__main__":
     parser.add_argument("input_file", help="The JSON file containing project information")
     parser.add_argument("--action", choices=["activate", "deactivate"], required=True,
                         help="The action to perform (activate or deactivate)")
-    parser.add_argument("--token", required=True, help="Your Snyk API token")
+    parser.add_argument("--token", default=os.environ.get("SNYK_TOKEN"),
+                        help="Your Snyk API token (defaults to SNYK_TOKEN env var)")
     args = parser.parse_args()
+    if not args.token:
+        parser.error("--token is required, or set the SNYK_TOKEN env var")
 
     with open(args.input_file, "r") as f:
         data = json.load(f)

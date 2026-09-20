@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 import argparse
 import time
@@ -11,8 +12,11 @@ RATE_LIMIT_DELAY = 0.2
 # Parse command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--group", required=True, help="Group ID")
-parser.add_argument("--token", required=True, help="API token")
+parser.add_argument("--token", default=os.environ.get("SNYK_TOKEN"),
+                    help="API token (defaults to SNYK_TOKEN env var)")
 args = parser.parse_args()
+if not args.token:
+    parser.error("--token is required, or set the SNYK_TOKEN env var")
 
 def get_organizations(group_id, api_key):
     url = f"{API_BASE_URL}/rest/groups/{group_id}/orgs?version={API_VERSION}&limit=100"
