@@ -10,7 +10,7 @@ their Group. See [Capability offboarding](#capability-offboarding) below.
 
 `get_projects.py` - gathers project information for entire Snyk Orgnisation. Uses [Snyk's REST API](https://apidocs.snyk.io/).
 
-`filter_by_capability.py` - filters `project_data.json` down to one product's project
+`filter_by_project_type.py` - filters `project_data.json` down to one product's project
 types (built-in `--project-type` groups: `iac`, `container`, `code`, `opensource`, or a
 custom `--types` list).
 
@@ -81,7 +81,7 @@ python3 get_projects.py --group YOUR_GROUP_ID
 
 # 2. Narrow to the product being dropped (prints a per-org count so you can
 #    sanity-check before deactivating anything)
-python3 filter_by_capability.py project_data.json --project-type iac
+python3 filter_by_project_type.py project_data.json --project-type iac
 
 # 3. Deactivate exactly those projects
 python3 change_proj_status.py projects_to_offboard.json --action deactivate
