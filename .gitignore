@@ -3,6 +3,10 @@ __pycache__
 .venv/
 venv/
 
+# bulk-activate-deactivate-projects run output (real org/project data)
+bulk-activate-deactivate-projects/project_data.json
+bulk-activate-deactivate-projects/projects_to_offboard.json
+
 # Build results
 bin/
 obj/

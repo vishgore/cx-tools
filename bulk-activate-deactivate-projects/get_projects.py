@@ -4,6 +4,8 @@ import requests
 import argparse
 import time
 
+from project_type_groups import PROJECT_TYPE_GROUPS
+
 # Define API version, URL base and Delay
 API_VERSION = "2024-08-22"
 API_BASE_URL = "https://api.snyk.io"
@@ -12,11 +14,24 @@ RATE_LIMIT_DELAY = 0.2
 # Parse command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--group", required=True, help="Group ID")
+parser.add_argument("--project-type", choices=sorted(PROJECT_TYPE_GROUPS),
+                    help="Only fetch this built-in project type group "
+                         "(filters server-side, via the projects endpoint's "
+                         "own types= parameter -- avoids pulling every "
+                         "project in orgs that have thousands)")
+parser.add_argument("--types",
+                    help="Comma-separated project_type values instead of "
+                         "--project-type, e.g. terraformconfig,k8sconfig")
 parser.add_argument("--token", default=os.environ.get("SNYK_TOKEN"),
                     help="API token (defaults to SNYK_TOKEN env var)")
 args = parser.parse_args()
 if not args.token:
     parser.error("--token is required, or set the SNYK_TOKEN env var")
+if args.project_type and args.types:
+    parser.error("pass only one of --project-type or --types")
+
+types = PROJECT_TYPE_GROUPS[args.project_type] if args.project_type else \
+    ([t.strip() for t in args.types.split(",") if t.strip()] if args.types else None)
 
 def get_organizations(group_id, api_key):
     url = f"{API_BASE_URL}/rest/groups/{group_id}/orgs?version={API_VERSION}&limit=100"
@@ -55,8 +70,10 @@ def get_organizations(group_id, api_key):
     return organizations
 
 
-def get_projects(org_id, api_key):
+def get_projects(org_id, api_key, types=None):
     url = f"{API_BASE_URL}/rest/orgs/{org_id}/projects?version={API_VERSION}&limit=100"
+    if types:
+        url += "&types=" + ",".join(types)
     headers = {"accept": "application/vnd.api+json", "authorization": f"token {api_key}"}
     projects = []
 
@@ -118,7 +135,7 @@ if __name__ == "__main__":
 
     for org in organizations:
         org_name = org["attributes"]["name"]
-        projects = get_projects(org["id"], api_key)
+        projects = get_projects(org["id"], api_key, types)
         org_project_data = extract_project_data(projects, org_name)
         project_data.extend(org_project_data)
 
