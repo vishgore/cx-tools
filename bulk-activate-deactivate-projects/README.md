@@ -28,9 +28,9 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Update variables in `get_projects.py`. Get the latest API Version from [Snyk's REST API](https://apidocs.snyk.io/)
+Update variables in `get_projects.py`. Get the latest API Version from [Snyk's REST API](https://docs.snyk.io/snyk-api)
 ```py
-API_VERSION = "2024-08-15"
+API_VERSION = "2026-03-25"
 RATE_LIMIT_DELAY = 0.2 (in seconds)
 ```
 

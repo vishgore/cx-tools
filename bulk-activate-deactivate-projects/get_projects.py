@@ -10,7 +10,7 @@ from urllib.parse import quote
 from project_type_groups import PROJECT_TYPE_GROUPS
 
 # Define API version, URL base and Delay
-API_VERSION = "2024-08-22"
+API_VERSION = "2026-03-25"
 API_BASE_URL = "https://api.snyk.io"
 RATE_LIMIT_DELAY = 0.2
 
