@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 def get_organizations(group_id, api_key):
     url = f"{API_BASE_URL}/rest/groups/{group_id}/orgs?version={API_VERSION}&limit=100"
-    headers = {"accept": "application/vnd.api+json", "authorization": f"{api_key}"}
+    headers = {"accept": "application/vnd.api+json", "authorization": f"token {api_key}"}
     organizations = []
 
     while url:
@@ -53,7 +53,7 @@ def get_organizations(group_id, api_key):
 
 def get_projects(org_id, api_key):
     url = f"{API_BASE_URL}/rest/orgs/{org_id}/projects?version={API_VERSION}&limit=100"
-    headers = {"accept": "application/vnd.api+json", "authorization": f"{api_key}"}
+    headers = {"accept": "application/vnd.api+json", "authorization": f"token {api_key}"}
     projects = []
 
     while url:
