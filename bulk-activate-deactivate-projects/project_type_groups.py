@@ -1,10 +1,12 @@
 # Snyk product -> REST API project "attributes.type" values.
 # Source: https://docs.snyk.io/developer-tools/snyk-api/api-endpoints-index-and-tips/project-type-responses-from-the-api
+# plus "secrets" (Snyk Code secrets scanning), confirmed against real
+# fetched data -- not in that reference doc, which is known to be stale.
 PROJECT_TYPE_GROUPS = {
     "iac": ["k8sconfig", "helmconfig", "terraformconfig", "terraformplan",
             "cloudformationconfig", "armconfig"],
     "container": ["dockerfile", "linux", "apk", "deb", "rpm"],
-    "code": ["sast"],
+    "code": ["sast", "secrets"],
     "opensource": ["npm", "pnpm", "yarn", "yarn-workspace", "maven", "gradle", "sbt",
                     "pip", "poetry", "pipenv", "rubygems", "golang", "gomodules",
                     "golangdep", "govendor", "nuget", "paket", "composer",
