@@ -2,9 +2,9 @@
 
 De / activates projects across multiple Snyk Organisations in a Group.
 
-Also used for **capability offboarding**: a customer drops a Snyk product (e.g. IaC)
-from their renewal, and you need to deactivate every project of that type across
-their Group. See [Capability offboarding](#capability-offboarding) below.
+Also used for **capability offboarding**: deactivating every project of one Snyk
+product (e.g. IaC) across a Group. See [Capability offboarding](#capability-offboarding)
+below.
 
 ## Features
 
@@ -75,8 +75,7 @@ python3 change_proj_status.py project_data.json --action activate/deactivate
 
 ## Capability offboarding
 
-To deactivate every project of one Snyk product (e.g. a customer drops IaC in their
-renewal) across a Group:
+To deactivate every project of one Snyk product (e.g. IaC) across a Group:
 
 ```sh
 export SNYK_TOKEN=your_api_token
