@@ -1,5 +1,7 @@
 .dccache
 __pycache__
+.venv/
+venv/
 
 # Build results
 bin/
