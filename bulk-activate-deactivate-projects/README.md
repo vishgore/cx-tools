@@ -12,12 +12,10 @@ their Group. See [Capability offboarding](#capability-offboarding) below.
 Accepts an optional `--project-type` / `--types` filter, applied server-side via the
 projects endpoint's own `types=` query parameter -- pass it whenever you already know
 what you're after, so orgs with thousands of projects aren't fetched in full just to
-throw most of them away.
-
-`filter_by_project_type.py` - filters an already-fetched `project_data.json` down to one
-product's project types (same built-in `--project-type` groups: `iac`, `container`,
-`code`, `opensource`, or a custom `--types` list). Useful when you fetched everything up
-front, or want to slice one dump multiple ways without re-fetching.
+throw most of them away. Built-in `--project-type` groups: `iac`, `container`, `code`,
+`secrets`, `opensource` (see `project_type_groups.py`), or pass `--types` with a
+comma-separated list of the API's own `attributes.type` values instead, e.g.
+`--types terraformconfig,k8sconfig`.
 
 `change_proj_status.py` - De / activates selected projects. Uses [Snyk's V1 API](https://snyk.docs.apiary.io/).
 
@@ -82,23 +80,12 @@ renewal) across a Group:
 export SNYK_TOKEN=your_api_token
 
 # 1. Gather only the relevant projects -- filtered server-side, so orgs with
-#    thousands of projects aren't fetched in full
+#    thousands of projects aren't fetched in full. Prints a per-org count so
+#    you can sanity-check before deactivating anything.
 python3 get_projects.py --group YOUR_GROUP_ID --project-type iac
 
-# 2. Sanity-check what matched (prints a per-org count) and write it under the
-#    name change_proj_status.py expects next
-python3 filter_by_project_type.py project_data.json --project-type iac
-
-# 3. Deactivate exactly those projects
-python3 change_proj_status.py projects_to_offboard.json --action deactivate
+# 2. Deactivate exactly those projects
+python3 change_proj_status.py project_data.json --action deactivate
 ```
 
-`--project-type` supports the built-in groups `iac`, `container`, `code`, `opensource`.
-For anything else, pass `--types` with a comma-separated list of the API's own
-`attributes.type` values instead, e.g. `--types terraformconfig,k8sconfig`.
-
-If you'd rather fetch everything once and slice it multiple ways afterwards, omit
-`--project-type`/`--types` from step 1 -- `get_projects.py` will pull every project in
-every org in the Group, and step 2 filters the resulting dump locally instead.
-
-To undo, re-run step 3 with `--action activate` on the same `projects_to_offboard.json`.
+To undo, re-run step 2 with `--action activate` on the same `project_data.json`.
