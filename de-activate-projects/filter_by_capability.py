@@ -3,7 +3,7 @@ import argparse
 
 # Snyk product -> REST API project "attributes.type" values.
 # Source: https://docs.snyk.io/developer-tools/snyk-api/api-endpoints-index-and-tips/project-type-responses-from-the-api
-CAPABILITY_TYPES = {
+PROJECT_TYPE_GROUPS = {
     "iac": ["k8sconfig", "helmconfig", "terraformconfig", "cloudformationconfig",
             "armconfig", "cloudconfig", "iac"],
     "container": ["dockerfile", "linux", "apk", "deb", "rpm"],
@@ -39,23 +39,23 @@ def print_summary(matched, types):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Filter project_data.json (from get_projects.py) down to one "
-                    "capability's project types, for offboarding a Snyk product.")
+                    "product's project types, for offboarding a Snyk product.")
     parser.add_argument("input_file", help="project_data.json from get_projects.py")
-    parser.add_argument("--capability", choices=sorted(CAPABILITY_TYPES),
-                        help="Built-in capability to filter for")
+    parser.add_argument("--project-type", choices=sorted(PROJECT_TYPE_GROUPS),
+                        help="Built-in project type group to filter for")
     parser.add_argument("--types",
                         help="Comma-separated project_type values instead of "
-                             "--capability, e.g. terraformconfig,k8sconfig")
+                             "--project-type, e.g. terraformconfig,k8sconfig")
     parser.add_argument("--out", default="projects_to_offboard.json",
                         help="Output file (default: projects_to_offboard.json)")
     args = parser.parse_args()
 
-    if not args.capability and not args.types:
-        parser.error("pass --capability or --types")
-    if args.capability and args.types:
-        parser.error("pass only one of --capability or --types")
+    if not args.project_type and not args.types:
+        parser.error("pass --project-type or --types")
+    if args.project_type and args.types:
+        parser.error("pass only one of --project-type or --types")
 
-    types = CAPABILITY_TYPES[args.capability] if args.capability else \
+    types = PROJECT_TYPE_GROUPS[args.project_type] if args.project_type else \
         [t.strip() for t in args.types.split(",") if t.strip()]
 
     project_data = load_project_data(args.input_file)
