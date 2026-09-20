@@ -1,8 +1,11 @@
 import json
 import os
+import sys
+import uuid
 import requests
 import argparse
 import time
+from urllib.parse import quote
 
 from project_type_groups import PROJECT_TYPE_GROUPS
 
@@ -34,7 +37,11 @@ types = PROJECT_TYPE_GROUPS[args.project_type] if args.project_type else \
     ([t.strip() for t in args.types.split(",") if t.strip()] if args.types else None)
 
 def get_organizations(group_id, api_key):
-    url = f"{API_BASE_URL}/rest/groups/{group_id}/orgs?version={API_VERSION}&limit=100"
+    try:
+        group_id = str(uuid.UUID(group_id))
+    except ValueError:
+        sys.exit(f"--group must be a UUID, got: {group_id!r}")
+    url = f"{API_BASE_URL}/rest/groups/{quote(group_id, safe='')}/orgs?version={API_VERSION}&limit=100"
     headers = {"accept": "application/vnd.api+json", "authorization": f"token {api_key}"}
     organizations = []
 
