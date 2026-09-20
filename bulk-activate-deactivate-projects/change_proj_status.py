@@ -4,7 +4,7 @@ import json
 import argparse
 
 
-def deactivate_or_activate_project(org_id, project_id, action, token):
+def deactivate_or_activate_project(org_id, project_id, action, token, org_name, project_name):
     """
     Deactivates or activates a project based on the specified action.
     """
@@ -18,7 +18,7 @@ def deactivate_or_activate_project(org_id, project_id, action, token):
     response = requests.post(url, headers=headers)
     response.raise_for_status()  # Raise exception for non-2xx status codes
 
-    print(f"Project {project_id} successfully {action}d.")
+    print(f"{action}d: {org_name} / {project_name} ({project_id})")
 
 
 if __name__ == "__main__":
@@ -35,9 +35,13 @@ if __name__ == "__main__":
     with open(args.input_file, "r") as f:
         data = json.load(f)
 
-    for project in data:
+    for i, project in enumerate(data, 1):
         org_id = project["org_id"]
         project_id = project["project_id"]
-        deactivate_or_activate_project(org_id, project_id, args.action, args.token)
+        org_name = project.get("org_name", "")
+        project_name = project.get("project_name", "")
+        print(f"[{i}/{len(data)}] ", end="")
+        deactivate_or_activate_project(org_id, project_id, args.action, args.token,
+                                        org_name, project_name)
 
-    print("All projects successfully {action}d.".format(action=args.action))
+    print(f"\nAll {len(data)} project(s) successfully {args.action}d.")
