@@ -23,8 +23,10 @@ different types in a row doesn't overwrite each other) -- override with `--out`.
 
 ## Configuration
 
-Install dependencies
+Install dependencies, ideally into a virtual environment
 ```sh
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -32,6 +34,14 @@ Update variables in `get_projects.py`. Get the latest API Version from [Snyk's R
 ```py
 API_VERSION = "2026-03-25"
 RATE_LIMIT_DELAY = 0.2 (in seconds)
+```
+
+Behind a TLS-inspecting corporate proxy (Zscaler, Netskope, etc.), `pip install` and
+the scripts themselves may fail with `certificate verify failed`. Point `pip` and
+`requests` at your proxy's root CA:
+```sh
+export PIP_CERT=/path/to/corp-root-ca.pem
+export REQUESTS_CA_BUNDLE=/path/to/corp-root-ca.pem
 ```
 
 ## Usage
@@ -70,7 +80,9 @@ Script will output `project_data.json` file. Edit the file as necessary. Example
 ### Activate / Deactivate Projects
 
 ```sh
-python3 change_proj_status.py project_data.json --action activate/deactivate
+python3 change_proj_status.py project_data.json --action deactivate
+# or, to reverse it:
+python3 change_proj_status.py project_data.json --action activate
 ```
 
 ## Capability offboarding
