@@ -8,7 +8,7 @@ below.
 
 ## Features
 
-`get_projects.py` - gathers project information for entire Snyk Orgnisation. Uses [Snyk's REST API](https://apidocs.snyk.io/).
+`get_projects.py` - gathers project information for entire Snyk Orgnisation. Uses [Snyk's REST API](https://docs.snyk.io/snyk-api).
 Accepts an optional `--project-type` / `--types` filter, applied server-side via the
 projects endpoint's own `types=` query parameter -- pass it whenever you already know
 what you're after, so orgs with thousands of projects aren't fetched in full just to
@@ -19,7 +19,7 @@ comma-separated list of the API's own `attributes.type` values instead, e.g.
 `project_data_<project-type>.json` when `--project-type` is given (so fetching two
 different types in a row doesn't overwrite each other) -- override with `--out`.
 
-`change_proj_status.py` - De / activates selected projects. Uses [Snyk's V1 API](https://snyk.docs.apiary.io/).
+`change_proj_status.py` - De / activates selected projects. Uses [Snyk's V1 API](https://docs.snyk.io/snyk-api/reference/projects-v1).
 
 ## Configuration
 
@@ -60,7 +60,7 @@ Script will output `project_data.json` file. Edit the file as necessary. Example
         "org_id": "**************",
         "project_name": "nodejs-goof/nodejs-goof(main)",
         "project_id": "**************",
-        "type": "sast",
+        "project_type": "sast",
         "target_file": "",
         "status": "active"
     }
