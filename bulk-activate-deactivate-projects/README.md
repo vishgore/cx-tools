@@ -61,7 +61,17 @@ Run the script locally
 python3 get_projects.py --group YOUR_GROUP_ID
 ```
 
-Script will output `project_data.json` file. Edit the file as necessary. Example below
+To narrow this to one Snyk product instead of every project in the Group, add
+`--project-type` (built-in groups: `iac`, `container`, `code`, `secrets`, `opensource`)
+or `--types` with a comma-separated list of the API's own `attributes.type` values --
+filtered server-side, so orgs with thousands of projects aren't fetched in full:
+
+```sh
+python3 get_projects.py --group YOUR_GROUP_ID --project-type iac
+```
+
+Script will output `project_data.json` (or `project_data_<project-type>.json` when
+`--project-type` is given). Edit the file as necessary. Example below
 
 ```json
 [
@@ -87,19 +97,10 @@ python3 change_proj_status.py project_data.json --action activate
 
 ## Capability offboarding
 
-To deactivate every project of one Snyk product (e.g. IaC) across a Group:
+Deactivating every project of one Snyk product (e.g. IaC) across a Group is just the
+two steps above with a `--project-type` (or `--types`) filter on the fetch step:
+[Gather project information](#gather-project-information) then
+[Activate / Deactivate Projects](#activate--deactivate-projects), using the
+`project_data_<project-type>.json` that the filtered fetch produces.
 
-```sh
-export SNYK_TOKEN=your_api_token
-
-# 1. Gather only the relevant projects -- filtered server-side, so orgs with
-#    thousands of projects aren't fetched in full. Prints a per-org count so
-#    you can sanity-check before deactivating anything. Writes to
-#    project_data_iac.json here specifically.
-python3 get_projects.py --group YOUR_GROUP_ID --project-type iac
-
-# 2. Deactivate exactly those projects
-python3 change_proj_status.py project_data_iac.json --action deactivate
-```
-
-To undo, re-run step 2 with `--action activate` on the same output file.
+To undo, re-run `change_proj_status.py` with `--action activate` on the same file.
